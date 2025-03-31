@@ -25,8 +25,12 @@ elif [[ "$COMMAND" == "update" ]]; then
         exit 1
     fi
 
+    echo "Updating APT index..."
+    sudo apt update -o Dir::Etc::sourcelist="sources.list.d/zbot.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+
     echo "Installing zbot-agent version $LATEST..."
     sudo apt install -y zbot-agent=$LATEST
+
 
 else
     echo "Usage:"
