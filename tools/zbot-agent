@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+COMMAND="$1"
+
+if [[ "$COMMAND" == "status" ]]; then
+    echo "ZBot Agent Status:"
+    echo "------------------"
+    echo "Version: $(dpkg-query -W -f='${Version}\n' zbot-agent)"
+
+    if systemctl is-active --quiet zbot-agent.service; then
+        echo "Service: Active"
+    else
+        echo "Service: Inactive or not installed"
+    fi
+
+    echo "Last manifest:"
+    curl -s https://prof-it-corporation.github.io/Zbot-APT-public/manifest.json | grep latest | head -n 1
+
+elif [[ "$COMMAND" == "update" ]]; then
+    echo "Checking for latest version..."
+    LATEST=$(curl -s https://prof-it-corporation.github.io/Zbot-APT-public/manifest.json | grep latest | cut -d '"' -f4)
+
+    if [[ -z "$LATEST" ]]; then
+        echo "Could not determine the latest version."
+        exit 1
+    fi
+
+    echo "Installing zbot-agent version $LATEST..."
+    sudo apt install -y zbot-agent=$LATEST
+
+else
+    echo "Usage:"
+    echo "  zbot-agent status     Show version and health"
+    echo "  zbot-agent update     Check and install latest version"
+fi
