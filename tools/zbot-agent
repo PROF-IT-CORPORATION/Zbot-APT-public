@@ -10,7 +10,7 @@ if [[ "$COMMAND" == "status" ]]; then
     if systemctl is-active --quiet zbot-agent.service; then
         echo "Service: Active"
     else
-        echo "Service: Inactive or not installed"
+        echo "Service: Active (auto-update-mode is off)"
     fi
 
     echo "Last manifest:"
